@@ -512,6 +512,22 @@ textarea {
   font-size: 0.78rem;
 }
 
+/* Retry button shown on failed bot responses */
+.retry-btn {
+  margin-left: 8px;
+  background: rgba(255,255,255,0.04);
+  color: #e2e8f0;
+  border: 1px solid rgba(255,255,255,0.06);
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 12px;
+}
+.retry-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
 .avatar.user {
   background: rgba(56, 189, 248, 0.18);
   color: #38bdf8;

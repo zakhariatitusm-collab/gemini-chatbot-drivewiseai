@@ -179,6 +179,7 @@ const translations = {
 let currentLang = 'en';
 
 const formatTime = () => new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+let lastOutgoingMessage = '';
 
 const createMessage = (role, content, status = 'normal') => {
   const messageElement = document.createElement('div');
@@ -305,15 +306,13 @@ const createCreditConsultationPrompt = (price, dpPercent, ratePercent, years) =>
   return `I want a vehicle financing consultation for a vehicle priced at ${formattedPrice}, with a down payment of ${dpPercent}%, an annual interest rate of ${ratePercent}%, and a tenor of ${years} years. Please provide installment recommendations, DP strategy, and financing advice.`;
 };
 
-const sendChatMessage = async (message) => {
-  if (!message || !message.trim()) return;
+const performChatRequest = async (message, thinkingMessage) => {
+  // remove any existing retry control
+  const existingRetry = thinkingMessage.querySelector('.retry-btn');
+  if (existingRetry) existingRetry.remove();
 
-  hideSuggestions();
-  chatBox.appendChild(createMessage('user', message));
-  const thinkingMessage = createMessage('bot', '', 'typing');
-  chatBox.appendChild(thinkingMessage);
-  chatBox.scrollTop = chatBox.scrollHeight;
-  input.value = '';
+  const content = thinkingMessage.querySelector('.message-content');
+  if (content) content.innerHTML = `<div class="typing-dots"><span></span><span></span><span></span></div>`;
 
   try {
     const response = await fetch('/api/chat', {
@@ -335,11 +334,47 @@ const sendChatMessage = async (message) => {
     const data = await response.json();
     const resultText = data && typeof data.result === 'string' ? data.result.trim() : '';
 
+    // remove retry if present
+    const retry = thinkingMessage.querySelector('.retry-btn');
+    if (retry) retry.remove();
+
     updateMessageText(thinkingMessage, resultText || 'Sorry, no response received.');
   } catch (error) {
     console.error('Chat request failed:', error);
+    // show error text but keep the user's original message available
     updateMessageText(thinkingMessage, 'Failed to get response from server.');
+    // refill input so the user can send again without retyping
+    input.value = message;
+    input.focus();
+
+    // add a retry button to the typing bubble so user can resend without retyping
+    const meta = thinkingMessage.querySelector('.message-meta') || thinkingMessage;
+    let retryBtn = thinkingMessage.querySelector('.retry-btn');
+    if (!retryBtn) {
+      retryBtn = document.createElement('button');
+      retryBtn.classList.add('retry-btn');
+      retryBtn.textContent = 'Retry';
+      retryBtn.addEventListener('click', () => {
+        retryBtn.disabled = true;
+        performChatRequest(message, thinkingMessage);
+      });
+      meta.appendChild(retryBtn);
+    }
   }
+};
+
+const sendChatMessage = async (message) => {
+  if (!message || !message.trim()) return;
+
+  hideSuggestions();
+  lastOutgoingMessage = message;
+  chatBox.appendChild(createMessage('user', message));
+  const thinkingMessage = createMessage('bot', '', 'typing');
+  chatBox.appendChild(thinkingMessage);
+  chatBox.scrollTop = chatBox.scrollHeight;
+  input.value = '';
+
+  await performChatRequest(message, thinkingMessage);
 };
 
 const handleConsultationClick = () => {
