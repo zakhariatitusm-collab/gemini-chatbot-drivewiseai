@@ -1,37 +1,42 @@
-<!DOCTYPE html>
-<html lang="en">
+﻿<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DriveWise AI</title>
+  <title>DriveWise AI | Drive Smarter. Own Better.</title>
+  <meta name="theme-color" content="#0f172a" />
+  <link rel="icon" type="image/png" sizes="any" href="/LogoDW.png" />
+  <link rel="shortcut icon" type="image/png" href="/LogoDW.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="page-shell">
-    <header class="topbar">
-      <div class="brand-wrap">
-        <div class="brand-logo">DW</div>
-        <div>
-          <p class="brand-label">DriveWise AI</p>
-          <p class="brand-tag">Drive Smarter. Own Better.</p>
-        </div>
+  <header id="navbar" class="topbar glass">
+    <div class="brand-wrap">
+      <div class="brand-logo"><img src="LogoDW.png" alt="DriveWise logo"></div>
+      <div>
+        <p class="brand-label">DriveWise AI</p>
+        <p class="brand-tag">Drive Smarter. Own Better.</p>
       </div>
-      <div class="topbar-actions">
-        <nav class="nav-links">
-          <a href="#home" data-i18n="home">Home</a>
-          <a href="#features" data-i18n="features">Features</a>
-          <a href="#chat" data-i18n="chat">AI Chat</a>
-          <a href="#about" data-i18n="about">About</a>
-        </nav>
-        <button id="lang-toggle" class="lang-toggle" type="button" aria-label="Toggle language">ID</button>
-      </div>
-    </header>
+    </div>
+    <div class="topbar-actions">
+      <nav class="nav-links">
+        <a href="#home" data-i18n="home">Home</a>
+        <a href="#features" data-i18n="features">Features</a>
+        <a href="#calculator">Calculator</a>
+        <a href="#chat" data-i18n="chat">AI Chat</a>
+        <a href="#about" data-i18n="about">About</a>
+      </nav>
+      <button id="lang-toggle" class="lang-toggle" type="button" aria-label="Toggle language">ID</button>
+    </div>
+  </header>
 
+  <div class="page-shell">
     <main>
       <section class="hero" id="home">
+        <div class="hero-overlay"></div>
         <div class="hero-copy">
           <p class="eyebrow" data-i18n="heroEyebrow">AI Automotive Assistant</p>
           <h1 data-i18n="heroTitle">Drive Smarter.<br />Own Better.</h1>
@@ -41,24 +46,22 @@
             <a class="button outline" href="#features" data-i18n="heroLearn">Learn More</a>
           </div>
         </div>
-        <div class="hero-panel">
-          <div class="hero-card glass-card hero-summary">
-            <div class="hero-card-tag" data-i18n="heroTag">Premium AI Assistant</div>
-            <h2 data-i18n="heroPanelTitle">DriveWise AI</h2>
-            <p data-i18n="heroPanelText">Get faster vehicle recommendations, financing guidance, and maintenance advice in one place.</p>
-            <div class="hero-stats">
-              <div>
-                <span>98%</span>
-                <p data-i18n="statAccuracy">Accuracy</p>
-              </div>
-              <div>
-                <span>1.4s</span>
-                <p data-i18n="statResponse">Response time</p>
-              </div>
-              <div>
-                <span>24/7</span>
-                <p data-i18n="statSupport">Support</p>
-              </div>
+        <div class="hero-panel glass-card hero-summary">
+          <div class="hero-card-tag" data-i18n="heroTag">Premium AI Assistant</div>
+          <h2 data-i18n="heroPanelTitle">DriveWise AI</h2>
+          <p data-i18n="heroPanelText">Get faster vehicle recommendations, financing guidance, and maintenance advice in one place.</p>
+          <div class="hero-stats">
+            <div>
+              <span>98%</span>
+              <p data-i18n="statAccuracy">Accuracy</p>
+            </div>
+            <div>
+              <span>1.4s</span>
+              <p data-i18n="statResponse">Response time</p>
+            </div>
+            <div>
+              <span>24/7</span>
+              <p data-i18n="statSupport">Support</p>
             </div>
           </div>
         </div>
@@ -103,32 +106,65 @@
         </div>
       </section>
 
-      <section class="parts-section">
+      <section id="calculator" class="calculator-section">
         <div class="section-heading">
-          <p class="eyebrow" data-i18n="partsEyebrow">Autoparts</p>
-          <h2 data-i18n="partsTitle">Automotive parts and systems</h2>
+          <h2 data-i18n="calcTitle">Simulasi Kredit Kendaraan</h2>
+          <p class="section-subtitle" data-i18n="calcSubtitle">Hitung estimasi angsuran mobil atau motor impian Anda.</p>
         </div>
-        <div class="parts-grid">
-          <article class="part-card glass-card">
-            <span class="part-icon">⚙️</span>
-            <h4 data-i18n="part1title">Engine</h4>
-            <p data-i18n="part1desc">Understand key components that power your ride.</p>
-          </article>
-          <article class="part-card glass-card">
-            <span class="part-icon">🛞</span>
-            <h4 data-i18n="part2title">Tires</h4>
-            <p data-i18n="part2desc">Choose the right tires for grip and comfort.</p>
-          </article>
-          <article class="part-card glass-card">
-            <span class="part-icon">🛑</span>
-            <h4 data-i18n="part3title">Brakes</h4>
-            <p data-i18n="part3desc">Keep stopping power reliable and safe.</p>
-          </article>
-          <article class="part-card glass-card">
-            <span class="part-icon">🔋</span>
-            <h4 data-i18n="part4title">Battery</h4>
-            <p data-i18n="part4desc">Monitor energy and electrical health.</p>
-          </article>
+        <div class="calculator-grid glass-card">
+          <div class="calculator-form">
+            <div class="form-group">
+              <label data-i18n="calcPriceLabel">Harga Kendaraan (Rp)</label>
+              <div class="input-prefix">
+                <span>Rp</span>
+                <input type="number" id="calc-price" placeholder="Contoh: 250000000" data-i18n="calcPricePlaceholder" oninput="hitungKredit()" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label data-i18n="calcDpLabel">Uang Muka / DP (%)</label>
+              <div class="input-prefix">
+                <input type="number" id="calc-dp" value="20" placeholder="20" data-i18n="calcDpPlaceholder" oninput="hitungKredit()" />
+                <span>%</span>
+              </div>
+            </div>
+            <div class="grid-2 gap-12">
+              <div class="form-group">
+                <label data-i18n="calcRateLabel">Bunga per Tahun</label>
+                <div class="input-prefix">
+                  <input type="number" id="calc-rate" value="6" step="0.1" placeholder="6" data-i18n="calcRatePlaceholder" oninput="hitungKredit()" />
+                  <span>%</span>
+                </div>
+              </div>
+              <div class="form-group">
+                <label data-i18n="calcTenorLabel">Tenor</label>
+                <div class="input-prefix select-prefix">
+                  <select id="calc-tenor" onchange="hitungKredit()">
+                    <option value="1" data-i18n="year1">1 Tahun</option>
+                    <option value="2" data-i18n="year2">2 Tahun</option>
+                    <option value="3" data-i18n="year3">3 Tahun</option>
+                    <option value="4" data-i18n="year4">4 Tahun</option>
+                    <option value="5" selected data-i18n="year5">5 Tahun</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="calculator-result glass-card result-panel">
+            <div class="result-header">
+              <h4 data-i18n="calcResultTitle">Estimasi Angsuran</h4>
+              <p data-i18n="calcResultSubtitle">Hitung cepat berdasarkan input Anda.</p>
+            </div>
+            <div class="result-main">
+              <span id="result-monthly">Rp 0</span>
+              <span class="result-sub" data-i18n="perMonth">/bln</span>
+            </div>
+            <div class="result-list">
+              <div><span data-i18n="totalDpLabel">Total DP</span><strong id="result-dp">Rp 0</strong></div>
+              <div><span data-i18n="principalLabel">Pokok Hutang</span><strong id="result-principal">Rp 0</strong></div>
+              <div><span data-i18n="interestLabel">Estimasi Total Bunga</span><strong id="result-interest">Rp 0</strong></div>
+            </div>
+            <button type="button" class="button primary calculator-action" onclick="document.getElementById('user-input').focus(); window.location.href='#chat';" data-i18n="calcButton">Konsultasi Detail via AI</button>
+          </div>
         </div>
       </section>
 
@@ -150,6 +186,10 @@
             <button type="button" class="suggestion-button" data-i18n="suggest3" data-suggest="suggest3">Calculate installment for a Rp250 million car</button>
             <button type="button" class="suggestion-button" data-i18n="suggest4" data-suggest="suggest4">Estimate my vehicle selling price</button>
             <button type="button" class="suggestion-button" data-i18n="suggest5" data-suggest="suggest5">Recommend the best engine oil</button>
+          </div>
+          <div class="chat-font-control">
+            <label for="chat-font-slider" id="chat-font-size-label">Chat size: 11px</label>
+            <input id="chat-font-slider" type="range" min="8" max="16" value="11" step="1" aria-label="Adjust chat font size" />
           </div>
           <form id="chat-form" class="chat-form">
             <textarea id="user-input" rows="1" placeholder="Ask DriveWise AI anything..." autocomplete="off" required data-i18n="userPlaceholder"></textarea>

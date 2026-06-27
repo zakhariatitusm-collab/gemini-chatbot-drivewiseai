@@ -3,6 +3,8 @@ const input = document.getElementById('user-input');
 const chatBox = document.getElementById('chat-box');
 const suggestionButtons = document.querySelectorAll('.suggestion-button');
 const langToggle = document.getElementById('lang-toggle');
+const chatFontSlider = document.getElementById('chat-font-slider');
+const chatFontSizeLabel = document.getElementById('chat-font-size-label');
 
 const translations = {
   en: {
@@ -64,6 +66,27 @@ const translations = {
     overlaySubtitle: 'Continue your current conversation in full screen.',
     aboutTitle: 'Built for premium automotive decisions.',
     aboutText: 'DriveWise AI helps you make intelligent choices across buying, selling, financing, maintenance, modifications, and spare part recommendations—all in a modern conversational experience.',
+    calcTitle: 'Vehicle Credit Simulation',
+    calcSubtitle: 'Estimate your installment for your dream car or bike.',
+    calcPriceLabel: 'Vehicle Price (Rp)',
+    calcPricePlaceholder: 'Example: 250000000',
+    calcDpLabel: 'Down Payment / DP (%)',
+    calcDpPlaceholder: '20',
+    calcRateLabel: 'Annual Interest Rate',
+    calcRatePlaceholder: '6',
+    calcTenorLabel: 'Tenor',
+    year1: '1 Year',
+    year2: '2 Years',
+    year3: '3 Years',
+    year4: '4 Years',
+    year5: '5 Years',
+    calcResultTitle: 'Installment Estimate',
+    calcResultSubtitle: 'Quick estimate based on your inputs.',
+    perMonth: '/mo',
+    totalDpLabel: 'Total DP',
+    principalLabel: 'Principal',
+    interestLabel: 'Estimated Total Interest',
+    calcButton: 'Consult Details via AI',
     carLabel: 'Car',
     bikeLabel: 'Motor',
   },
@@ -126,6 +149,27 @@ const translations = {
     overlaySubtitle: 'Lanjutkan percakapan yang sedang berjalan secara layar penuh.',
     aboutTitle: 'Dibangun untuk keputusan otomotif premium.',
     aboutText: 'DriveWise AI membantu Anda membuat pilihan cerdas dalam membeli, menjual, membiayai, merawat, memodifikasi, dan merekomendasikan suku cadang dalam pengalaman percakapan modern.',
+    calcTitle: 'Simulasi Kredit Kendaraan',
+    calcSubtitle: 'Hitung estimasi angsuran mobil atau motor impian Anda.',
+    calcPriceLabel: 'Harga Kendaraan (Rp)',
+    calcPricePlaceholder: 'Contoh: 250000000',
+    calcDpLabel: 'Uang Muka / DP (%)',
+    calcDpPlaceholder: '20',
+    calcRateLabel: 'Bunga per Tahun',
+    calcRatePlaceholder: '6',
+    calcTenorLabel: 'Tenor',
+    year1: '1 Tahun',
+    year2: '2 Tahun',
+    year3: '3 Tahun',
+    year4: '4 Tahun',
+    year5: '5 Tahun',
+    calcResultTitle: 'Estimasi Angsuran',
+    calcResultSubtitle: 'Hitung cepat berdasarkan input Anda.',
+    perMonth: '/bln',
+    totalDpLabel: 'Total DP',
+    principalLabel: 'Pokok Hutang',
+    interestLabel: 'Estimasi Total Bunga',
+    calcButton: 'Konsultasi Detail via AI',
     carLabel: 'Mobil',
     bikeLabel: 'Motor',
   },
@@ -172,15 +216,17 @@ const applyTranslations = () => {
     const value = translations[currentLang]?.[key];
     if (!value) return;
 
-    if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA' || element.tagName === 'BUTTON') {
+    if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
       element.placeholder = value;
-      if (element.tagName === 'BUTTON') {
-        element.textContent = value;
-      }
       return;
     }
 
-    if (element.tagName === 'A' || element.tagName === 'P' || element.tagName === 'H1' || element.tagName === 'H2' || element.tagName === 'H3' || element.tagName === 'H4' || element.tagName === 'SPAN' || element.tagName === 'DIV') {
+    if (element.tagName === 'BUTTON' || element.tagName === 'A' || element.tagName === 'LABEL' || element.tagName === 'OPTION') {
+      element.textContent = value;
+      return;
+    }
+
+    if (element.tagName === 'P' || element.tagName === 'H1' || element.tagName === 'H2' || element.tagName === 'H3' || element.tagName === 'H4' || element.tagName === 'SPAN' || element.tagName === 'DIV') {
       element.innerHTML = value;
     }
   });
@@ -218,6 +264,45 @@ const suggestionTexts = {
   },
 };
 
+const formatRupiah = (number) => {
+  return new Intl.NumberFormat('id-ID', {
+    style: 'currency',
+    currency: 'IDR',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(number);
+};
+
+function hitungKredit() {
+  const price = parseFloat(document.getElementById('calc-price').value);
+  const dpPercent = parseFloat(document.getElementById('calc-dp').value);
+  const ratePercent = parseFloat(document.getElementById('calc-rate').value);
+  const years = parseInt(document.getElementById('calc-tenor').value, 10);
+
+  if (isNaN(price) || isNaN(dpPercent) || isNaN(ratePercent) || isNaN(years) || price <= 0) {
+    document.getElementById('result-monthly').innerText = 'Rp 0';
+    document.getElementById('result-dp').innerText = 'Rp 0';
+    document.getElementById('result-principal').innerText = 'Rp 0';
+    document.getElementById('result-interest').innerText = 'Rp 0';
+    return;
+  }
+
+  const dpAmount = price * (dpPercent / 100);
+  const principal = price - dpAmount;
+  const totalInterest = principal * (ratePercent / 100) * years;
+  const monthlyInstallment = (principal + totalInterest) / (years * 12);
+
+  document.getElementById('result-monthly').innerText = formatRupiah(monthlyInstallment);
+  document.getElementById('result-dp').innerText = formatRupiah(dpAmount);
+  document.getElementById('result-principal').innerText = formatRupiah(principal);
+  document.getElementById('result-interest').innerText = formatRupiah(totalInterest);
+}
+
+const autoResize = (textarea) => {
+  textarea.style.height = 'auto';
+  textarea.style.height = `${Math.min(textarea.scrollHeight, 180)}px`;
+};
+
 const applySuggestionText = () => {
   suggestionButtons.forEach((button) => {
     const key = button.getAttribute('data-suggest');
@@ -225,6 +310,18 @@ const applySuggestionText = () => {
       button.textContent = suggestionTexts[currentLang][key];
     }
   });
+};
+
+const updateChatFontSize = (size) => {
+  if (!size) return;
+  const fontSize = `${size}px`;
+  const chatShell = document.getElementById('chat-shell');
+  if (chatShell) {
+    chatShell.style.setProperty('--chat-font-size', fontSize);
+  }
+  if (chatFontSizeLabel) {
+    chatFontSizeLabel.textContent = `Chat size: ${fontSize}`;
+  }
 };
 
 const hideSuggestions = () => {
@@ -379,6 +476,18 @@ input.addEventListener('keydown', (event) => {
     event.preventDefault();
     form.requestSubmit();
   }
+});
+
+input.addEventListener('input', () => autoResize(input));
+
+chatFontSlider?.addEventListener('input', (event) => {
+  updateChatFontSize(event.target.value);
+});
+
+window.addEventListener('load', () => {
+  autoResize(input);
+  hitungKredit();
+  updateChatFontSize(chatFontSlider?.value || 11);
 });
 
 suggestionButtons.forEach((button) => {
