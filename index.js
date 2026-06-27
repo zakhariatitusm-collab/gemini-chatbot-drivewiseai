@@ -32,8 +32,8 @@ app.post('/api/chat', async (req, res) => {
     try {
         if(!Array.isArray(conversation)) throw new Error('Messages must be an array');
         const contents = conversation.map(({ role, text }) => ({
-            role,
-            parts: [{ text}]
+            role: role === 'assistant' || role === 'bot' ? 'model' : role,
+            parts: [{ text }]
         }));
         const response = await ai.models.generateContent({
             model: GEMINI_MODEL,

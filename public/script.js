@@ -180,6 +180,34 @@ let currentLang = 'en';
 
 const formatTime = () => new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 let lastOutgoingMessage = '';
+let conversationHistory = [];
+const STORAGE_KEY = 'drivewise-chat-history';
+
+const saveConversationHistory = () => {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(conversationHistory));
+  } catch (error) {
+    console.warn('Unable to save chat history:', error);
+  }
+};
+
+const loadConversationHistory = () => {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (!saved) return;
+
+    const parsed = JSON.parse(saved);
+    if (!Array.isArray(parsed)) return;
+
+    conversationHistory = parsed.filter((item) => item && typeof item.text === 'string' && ['user', 'assistant', 'model', 'bot'].includes(item.role));
+
+    conversationHistory.forEach(({ role, text }) => {
+      chatBox.appendChild(createMessage(role === 'user' ? 'user' : 'bot', text));
+    });
+  } catch (error) {
+    console.warn('Unable to restore chat history:', error);
+  }
+};
 
 const createMessage = (role, content, status = 'normal') => {
   const messageElement = document.createElement('div');
@@ -307,7 +335,6 @@ const createCreditConsultationPrompt = (price, dpPercent, ratePercent, years) =>
 };
 
 const performChatRequest = async (message, thinkingMessage) => {
-  // remove any existing retry control
   const existingRetry = thinkingMessage.querySelector('.retry-btn');
   if (existingRetry) existingRetry.remove();
 
@@ -321,9 +348,10 @@ const performChatRequest = async (message, thinkingMessage) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        conversation: [
-          { role: 'user', text: message },
-        ],
+        conversation: conversationHistory.map(({ role, text }) => ({
+          role: role === 'assistant' ? 'model' : role,
+          text,
+        })),
       }),
     });
 
@@ -334,20 +362,19 @@ const performChatRequest = async (message, thinkingMessage) => {
     const data = await response.json();
     const resultText = data && typeof data.result === 'string' ? data.result.trim() : '';
 
-    // remove retry if present
+    conversationHistory.push({ role: 'assistant', text: resultText || 'Sorry, no response received.' });
+    saveConversationHistory();
+
     const retry = thinkingMessage.querySelector('.retry-btn');
     if (retry) retry.remove();
 
     updateMessageText(thinkingMessage, resultText || 'Sorry, no response received.');
   } catch (error) {
     console.error('Chat request failed:', error);
-    // show error text but keep the user's original message available
     updateMessageText(thinkingMessage, 'Failed to get response from server.');
-    // refill input so the user can send again without retyping
     input.value = message;
     input.focus();
 
-    // add a retry button to the typing bubble so user can resend without retyping
     const meta = thinkingMessage.querySelector('.message-meta') || thinkingMessage;
     let retryBtn = thinkingMessage.querySelector('.retry-btn');
     if (!retryBtn) {
@@ -366,15 +393,20 @@ const performChatRequest = async (message, thinkingMessage) => {
 const sendChatMessage = async (message) => {
   if (!message || !message.trim()) return;
 
+  const normalizedMessage = message.trim();
   hideSuggestions();
-  lastOutgoingMessage = message;
-  chatBox.appendChild(createMessage('user', message));
+  lastOutgoingMessage = normalizedMessage;
+
+  conversationHistory.push({ role: 'user', text: normalizedMessage });
+  saveConversationHistory();
+
+  chatBox.appendChild(createMessage('user', normalizedMessage));
   const thinkingMessage = createMessage('bot', '', 'typing');
   chatBox.appendChild(thinkingMessage);
   chatBox.scrollTop = chatBox.scrollHeight;
   input.value = '';
 
-  await performChatRequest(message, thinkingMessage);
+  await performChatRequest(normalizedMessage, thinkingMessage);
 };
 
 const handleConsultationClick = () => {
@@ -588,6 +620,7 @@ suggestionButtons.forEach((button) => {
 });
 
 updateLocale();
+loadConversationHistory();
 
 function updateMessageText(messageElement, text) {
   if (!messageElement) {
