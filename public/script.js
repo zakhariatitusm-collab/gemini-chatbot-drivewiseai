@@ -65,6 +65,7 @@ const translations = {
     suggest5: 'Recommend the best engine oil',
     overlayTitle: 'DriveWise Chat',
     overlaySubtitle: 'Continue your current conversation in full screen.',
+    goToDrivewise: 'Go to DriveWise AI',
     aboutTitle: 'Built for premium automotive decisions.',
     aboutText: 'DriveWise AI helps you make intelligent choices across buying, selling, financing, maintenance, modifications, and spare part recommendations—all in a modern conversational experience.',
     calcTitle: 'Vehicle Credit Simulation',
@@ -149,6 +150,7 @@ const translations = {
     suggest5: 'Rekomendasikan oli mesin terbaik',
     overlayTitle: 'Chat DriveWise',
     overlaySubtitle: 'Lanjutkan percakapan yang sedang berjalan secara layar penuh.',
+    goToDrivewise: 'Buka DriveWise AI',
     aboutTitle: 'Dibangun untuk keputusan otomotif premium.',
     aboutText: 'DriveWise AI membantu Anda membuat pilihan cerdas dalam membeli, menjual, membiayai, merawat, memodifikasi, dan merekomendasikan suku cadang dalam pengalaman percakapan modern.',
     calcTitle: 'Simulasi Kredit Kendaraan',
@@ -435,7 +437,7 @@ const sendChatMessage = async (message) => {
   chatBox.appendChild(createMessage('user', normalizedMessage));
   const thinkingMessage = createMessage('bot', '', 'typing');
   chatBox.appendChild(thinkingMessage);
-  chatBox.scrollTop = chatBox.scrollHeight;
+  scrollMessageToTop(thinkingMessage);
   input.value = '';
 
   await performChatRequest(normalizedMessage, thinkingMessage);
@@ -685,10 +687,26 @@ toFullscreenBtn?.addEventListener('click', () => {
   window.location.href = 'chat.html';
 });
 
+const getVisibleChatTop = () => {
+  if (!chatBox) return 0;
+  return chatBox.scrollTop;
+};
+
+const scrollMessageToTop = (messageElement) => {
+  if (!messageElement || !chatBox) return;
+  const previousMessage = messageElement.previousElementSibling;
+  const topMessage = previousMessage && previousMessage.classList.contains('message')
+    ? previousMessage
+    : messageElement;
+  const offset = Math.max(0, topMessage.offsetTop - 16);
+  chatBox.scrollTop = offset;
+};
+
 function updateMessageText(messageElement, text) {
   if (!messageElement) {
-    chatBox.appendChild(createMessage('bot', text));
-    chatBox.scrollTop = chatBox.scrollHeight;
+    const newMessage = createMessage('bot', text);
+    chatBox.appendChild(newMessage);
+    scrollMessageToTop(newMessage);
     return;
   }
 
@@ -700,5 +718,5 @@ function updateMessageText(messageElement, text) {
   if (meta) {
     meta.textContent = formatTime();
   }
-  chatBox.scrollTop = chatBox.scrollHeight;
+  scrollMessageToTop(messageElement);
 }

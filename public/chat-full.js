@@ -68,6 +68,16 @@ const loadConversationHistory = () => {
   updateSuggestionVisibility();
 };
 
+const scrollMessageToTop = (messageElement) => {
+  if (!messageElement || !chatBox) return;
+  const previousMessage = messageElement.previousElementSibling;
+  const topMessage = previousMessage && previousMessage.classList.contains('message')
+    ? previousMessage
+    : messageElement;
+  const offset = Math.max(0, topMessage.offsetTop - 12);
+  chatBox.scrollTop = offset;
+};
+
 const performChatRequest = async (messageElement) => {
   const content = messageElement.querySelector('.message-content'); if (content) content.innerHTML = `<div class="typing-dots"><span></span><span></span><span></span></div>`;
   try {
@@ -84,7 +94,7 @@ const performChatRequest = async (messageElement) => {
       throw new Error('quota');
     }
     const resultText = data && typeof data.result === 'string' ? data.result.trim() : 'No response';
-    conversationHistory.push({ role: 'assistant', text: resultText }); saveConversationHistory(); if (content) content.innerHTML = renderMessageContent(resultText); chatBox.scrollTop = chatBox.scrollHeight;
+    conversationHistory.push({ role: 'assistant', text: resultText }); saveConversationHistory(); if (content) content.innerHTML = renderMessageContent(resultText); scrollMessageToTop(messageElement);
   } catch (e) {
     console.error('Chat request failed', e);
     let errorMsg = 'Failed to get response from server.';
@@ -105,7 +115,7 @@ const sendChatMessage = async (message) => {
   chatBox.appendChild(createMessage('user', normalized));
   const thinking = createMessage('bot', '', 'typing');
   chatBox.appendChild(thinking);
-  chatBox.scrollTop = chatBox.scrollHeight;
+  scrollMessageToTop(thinking);
   chatInput.value = '';
   updateSuggestionVisibility();
   await performChatRequest(thinking);

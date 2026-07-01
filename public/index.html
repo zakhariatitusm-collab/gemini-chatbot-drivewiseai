@@ -8,7 +8,42 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
   <link rel="stylesheet" href="style.css" />
+  <style>
+    /* Feature icon colors and hover transitions (from DOCTYPE theme) */
+    .feature-card { transition: transform 0.25s ease; }
+    .feature-card.group:hover { transform: translateY(-8px); }
+    .icon-wrap { width:56px; height:56px; border-radius:12px; display:flex; align-items:center; justify-content:center; margin-bottom:1rem; transition: background-color .25s ease, color .25s ease; }
+    .icon-wrap i { font-size:24px; transition: color .25s ease; }
+    .icon-blue { background: rgba(37,99,235,0.08); }
+    .icon-blue i { color: #2563EB; }
+    .icon-sky { background: rgba(56,189,248,0.08); }
+    .icon-sky i { color: #38BDF8; }
+    .icon-green { background: rgba(34,197,94,0.08); }
+    .icon-green i { color: #22C55E; }
+    .icon-amber { background: rgba(245,158,11,0.08); }
+    .icon-amber i { color: #F59E0B; }
+    .icon-red { background: rgba(239,68,68,0.08); }
+    .icon-red i { color: #EF4444; }
+    .icon-purple { background: rgba(124,58,237,0.08); }
+    .icon-purple i { color: #7C3AED; }
+    .feature-card.group:hover .icon-wrap { background-color: var(--hover-bg, rgba(255,255,255,0.12)); }
+    .feature-card.group:hover .icon-wrap i { color: #ffffff !important; }
+    /* Topbar opacity (70%) - background color used so children keep full opacity */
+    .topbar.glass { background-color: rgba(15, 23, 42, 0.70); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+
+    /* Footer credit text size for mobile and desktop */
+    .site-footer .footer-inner p { font-size: 12px; }
+
+     /* Scroll offset when navigating to anchors
+       - Mobile: 135px
+       - Desktop (>=768px): 115px */
+     #home, #features, #calculator, #chat, #about { scroll-margin-top: 135px; }
+    @media (min-width: 768px) {
+      #home, #features, #calculator, #chat, #about { scroll-margin-top: 115px; }
+    }
+  </style>
 </head>
 <body>
   <header id="navbar" class="topbar glass">
@@ -71,33 +106,45 @@
           <h2 data-i18n="coreTitle">Everything you need for smarter vehicle ownership.</h2>
         </div>
         <div class="feature-grid">
-          <article class="feature-card glass-card">
-            <p class="feature-icon">🚗</p>
+          <article class="feature-card glass-card group">
+            <div class="icon-wrap icon-blue">
+              <i class="ph ph-car" aria-hidden="true"></i>
+            </div>
             <h3 data-i18n="feature1title">Buy Vehicle</h3>
             <p data-i18n="feature1desc">Get tailored recommendations for cars and motorcycles.</p>
           </article>
-          <article class="feature-card glass-card">
-            <p class="feature-icon">🏍</p>
+          <article class="feature-card glass-card group">
+            <div class="icon-wrap icon-sky">
+              <i class="ph ph-motorcycle" aria-hidden="true"></i>
+            </div>
             <h3 data-i18n="feature2title">Sell Vehicle</h3>
             <p data-i18n="feature2desc">Estimate pricing and optimize your sale strategy.</p>
           </article>
-          <article class="feature-card glass-card">
-            <p class="feature-icon">💰</p>
+          <article class="feature-card glass-card group">
+            <div class="icon-wrap icon-green">
+              <i class="ph ph-calculator" aria-hidden="true"></i>
+            </div>
             <h3 data-i18n="feature3title">Finance Calculator</h3>
             <p data-i18n="feature3desc">Simulate installments, DP, tenor, and affordability.</p>
           </article>
-          <article class="feature-card glass-card">
-            <p class="feature-icon">⚖</p>
+          <article class="feature-card glass-card group">
+            <div class="icon-wrap icon-amber">
+              <i class="ph ph-scales" aria-hidden="true"></i>
+            </div>
             <h3 data-i18n="feature4title">Compare Vehicle</h3>
             <p data-i18n="feature4desc">Evaluate options side by side with intelligent analysis.</p>
           </article>
-          <article class="feature-card glass-card">
-            <p class="feature-icon">🔧</p>
+          <article class="feature-card glass-card group">
+            <div class="icon-wrap icon-red">
+              <i class="ph ph-wrench" aria-hidden="true"></i>
+            </div>
             <h3 data-i18n="feature5title">Maintenance & Modification</h3>
             <p data-i18n="feature5desc">Receive practical advice for upkeep and upgrades.</p>
           </article>
-          <article class="feature-card glass-card">
-            <p class="feature-icon">🤖</p>
+          <article class="feature-card glass-card group">
+            <div class="icon-wrap icon-purple">
+              <i class="ph ph-robot" aria-hidden="true"></i>
+            </div>
             <h3 data-i18n="feature6title">AI Automotive Chat</h3>
             <p data-i18n="feature6desc">Talk to an expert assistant for any vehicle question.</p>
           </article>
@@ -173,7 +220,7 @@
             <h2 data-i18n="chatTitle">Talk to DriveWise AI</h2>
           </div>
           <p class="chat-description" data-i18n="chatDescription">Ask about buying, selling, financing, maintenance, or vehicle recommendations. The assistant is ready.</p>
-          <button id="to-fullscreen" class="button primary">Go to Drivewise AI</button>
+          <button id="to-fullscreen" class="button primary" data-i18n="goToDrivewise">Go to Drivewise AI</button>
         </div>
       </section>
 
