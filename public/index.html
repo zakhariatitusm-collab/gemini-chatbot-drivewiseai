@@ -34,7 +34,7 @@
     .topbar.glass { background-color: rgba(15, 23, 42, 0.25); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
 
     /* Footer credit text size for mobile and desktop */
-    .site-footer .footer-inner p { font-size: 12px; }
+    .site-footer .footer-inner p { font-size: 14px; }
 
      /* Scroll offset when navigating to anchors
        - Mobile: 135px
@@ -62,7 +62,13 @@
         <a href="#chat" data-i18n="chat">AI Chat</a>
         <a href="#about" data-i18n="about">About</a>
       </nav>
-      <button id="lang-toggle" class="lang-toggle" type="button" aria-label="Toggle language">ID</button>
+      <button id="lang-toggle" class="lang-toggle" type="button" aria-label="Toggle language" aria-pressed="false">
+        <span class="lang-toggle-track">
+          <span class="lang-toggle-thumb"></span>
+          <span class="lang-toggle-label lang-toggle-label-left">ID</span>
+          <span class="lang-toggle-label lang-toggle-label-right">EN</span>
+        </span>
+      </button>
     </div>
   </header>
 

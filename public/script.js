@@ -233,7 +233,7 @@ const translations = {
     vehicleYearLabel: 'Tahun Kendaraan',
     incomeLabel: 'Total Penghasilan Bulanan',
     incomePlaceholder: 'Contoh: 10000000',
-    existingLoanLabel: 'Apakah ada cicilan yang sedang berjalan?',
+    existingLoanLabel: 'Apakah Ada Cicilan Yang Sedang Berjalan?',
     loanNo: 'Tidak',
     loanYes: 'Ya',
     currentLoanLabel: 'Nominal Cicilan Saat Ini',
@@ -252,7 +252,7 @@ const translations = {
     summaryConditionUsed: 'Bekas',
     summaryVehicleYear: 'Tahun kendaraan',
     summaryTotalIncome: 'Total penghasilan bulanan',
-    summaryExistingInstallment: 'Apakah ada cicilan yang sedang berjalan?',
+    summaryExistingInstallment: 'Apakah Ada Cicilan Yang Sedang Berjalan?',
     summaryCurrentInstallmentAmount: 'Nominal cicilan saat ini',
     summaryYes: 'Ya',
     summaryNo: 'Tidak',
@@ -358,6 +358,14 @@ const createMessage = (role, content, status = 'normal') => {
   return messageElement;
 };
 
+const updateLanguageToggle = () => {
+  if (!langToggle) return;
+  const isEnglish = currentLang === 'en';
+  langToggle.classList.toggle('active', isEnglish);
+  langToggle.setAttribute('aria-pressed', String(isEnglish));
+  langToggle.setAttribute('aria-label', isEnglish ? 'Switch to Indonesian' : 'Switch to English');
+};
+
 const applyTranslations = () => {
   document.querySelectorAll('[data-i18n]').forEach((element) => {
     const key = element.getAttribute('data-i18n');
@@ -388,7 +396,7 @@ const applyTranslations = () => {
     }
   });
 
-  langToggle.textContent = currentLang === 'en' ? 'ID' : 'EN';
+  updateLanguageToggle();
 };
 
 const toggleLanguage = () => {

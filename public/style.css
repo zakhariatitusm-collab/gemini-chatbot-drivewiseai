@@ -69,18 +69,87 @@ textarea {
 }
 
 .lang-toggle {
-  border: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.04);
+  border: 0;
+  background: transparent;
   color: #cbd5e1;
-  border-radius: 999px;
-  padding: 11px 18px;
+  padding: 0;
   cursor: pointer;
-  transition: transform 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+  transition: transform 0.2s ease;
 }
 
 .lang-toggle:hover {
   transform: translateY(-1px);
-  border-color: rgba(56, 189, 248, 0.25);
+}
+
+.lang-toggle:focus-visible {
+  outline: none;
+}
+
+.lang-toggle:focus-visible .lang-toggle-track {
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.25);
+}
+
+.lang-toggle-track {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  width: 64px;
+  height: 28px;
+  padding: 4px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.12);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.25s ease, border-color 0.25s ease;
+}
+
+.lang-toggle-thumb {
+  position: absolute;
+  top: 2px;
+  left: px;
+  width: 26px;
+  height: 21px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #38bdf8, #2563eb);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+  transition: transform 0.25s ease;
+}
+
+.lang-toggle-label {
+  position: relative;
+  z-index: 1;
+  width: 50%;
+  text-align: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #cbd5e1;
+  transition: color 0.25s ease;
+}
+
+.lang-toggle.active .lang-toggle-track {
+  background: rgba(56, 189, 248, 0.2);
+  border-color: rgba(56, 189, 248, 0.45);
+}
+
+.lang-toggle.active .lang-toggle-thumb {
+  transform: translateX(28px);
+}
+
+.lang-toggle:not(.active) .lang-toggle-label-left {
+  color: #ffffff;
+}
+
+.lang-toggle:not(.active) .lang-toggle-label-right {
+  color: #cbd5e1;
+}
+
+.lang-toggle.active .lang-toggle-label-left {
+  color: #cbd5e1;
+}
+
+.lang-toggle.active .lang-toggle-label-right {
+  color: #ffffff;
 }
 
 .topbar {
@@ -1023,8 +1092,7 @@ textarea {
     position: fixed;
     top: 14px;
     right: 14px;
-    padding: 8px 12px;
-    font-size: 0.75rem;
+    padding: 0;
     z-index: 200;
   }
 
@@ -1208,8 +1276,7 @@ textarea {
   .lang-toggle {
     top: 10px;
     right: 10px;
-    padding: 6px 10px;
-    font-size: 0.65rem;
+    padding: 0;
   }
 
   .nav-links {
