@@ -4,6 +4,15 @@ const chatBox = document.getElementById('chat-box');
 const suggestionButtons = document.querySelectorAll('.suggestion-button');
 const langToggle = document.getElementById('lang-toggle');
 const aiConsultButton = document.getElementById('calc-consult-ai');
+const advancedToggle = document.getElementById('advance-detail-toggle');
+const advancedClear = document.getElementById('advance-clear');
+const advancedPanel = document.getElementById('advanced-details-panel');
+const conditionSelect = document.getElementById('vehicle-condition');
+const yearRow = document.getElementById('vehicle-year-row');
+const vehicleYearSelect = document.getElementById('vehicle-year');
+const existingLoanSelect = document.getElementById('existing-loan');
+const currentLoanRow = document.getElementById('current-loan-row');
+const currentLoanAmount = document.getElementById('current-loan-amount');
 const chatFontSlider = document.getElementById('chat-font-slider');
 const chatFontSizeLabel = document.getElementById('chat-font-size-label');
 
@@ -90,8 +99,43 @@ const translations = {
     interestLabel: 'Estimated Total Interest',
     calcButton: 'Consult Details via AI',
     consultMissingPrice: 'Please enter the vehicle price and set up the credit parameters before consulting.',
+    advanceDetails: 'Advanced Details',
+    hideDetails: 'Hide Details',
+    optionalNote: 'Optional: fill in only if available.',
+    vehicleTypeLabel: 'Vehicle Type',
+    vehicleNameLabel: 'Vehicle Name',
+    vehicleNamePlaceholder: 'Example: Toyota Avanza / NMAX',
+    vehicleBrandLabel: 'Vehicle Brand',
+    vehicleBrandPlaceholder: 'Example: Honda',
+    conditionLabel: 'Condition',
+    conditionNew: 'New',
+    conditionUsed: 'Used',
+    vehicleYearLabel: 'Vehicle Year',
+    incomeLabel: 'Total Income',
+    incomePlaceholder: 'Example: 10000000',
+    existingLoanLabel: 'Existing Installment?',
+    loanNo: 'No',
+    loanYes: 'Yes',
+    currentLoanLabel: 'Current Installment Amount',
+    currentLoanPlaceholder: 'Example: 1500000',
     carLabel: 'Car',
-    bikeLabel: 'Motor',
+    bikeLabel: 'Motorcycle',
+    selectVehicleType: 'Select vehicle type',
+    selectCondition: 'Select condition',
+    clearButton: 'Clear',
+    summaryTitle: 'Summary',
+    summaryVehicleType: 'Vehicle type',
+    summaryVehicleName: 'Vehicle name',
+    summaryVehicleBrand: 'Vehicle brand',
+    summaryCondition: 'Condition',
+    summaryConditionNew: 'New',
+    summaryConditionUsed: 'Used',
+    summaryVehicleYear: 'Vehicle year',
+    summaryTotalIncome: 'Total income',
+    summaryExistingInstallment: 'Existing installment',
+    summaryCurrentInstallmentAmount: 'Current installment amount',
+    summaryYes: 'Yes',
+    summaryNo: 'No',
   },
   id: {
     home: 'Beranda',
@@ -175,8 +219,43 @@ const translations = {
     interestLabel: 'Estimasi Total Bunga',
     calcButton: 'Konsultasi Detail via AI',
     consultMissingPrice: 'Silakan masukkan harga kendaraan dan tentukan parameter perhitungan kredit sebelum berkonsultasi.',
+    advanceDetails: 'Detail Lanjutan',
+    hideDetails: 'Sembunyikan Detail',
+    optionalNote: 'Opsional: isi hanya jika tersedia.',
+    vehicleTypeLabel: 'Jenis Kendaraan',
+    vehicleNameLabel: 'Nama Kendaraan',
+    vehicleNamePlaceholder: 'Contoh: Toyota Avanza / NMAX',
+    vehicleBrandLabel: 'Merek Kendaraan',
+    vehicleBrandPlaceholder: 'Contoh: Honda',
+    conditionLabel: 'Kondisi',
+    conditionNew: 'Baru',
+    conditionUsed: 'Bekas',
+    vehicleYearLabel: 'Tahun Kendaraan',
+    incomeLabel: 'Total Penghasilan',
+    incomePlaceholder: 'Contoh: 10000000',
+    existingLoanLabel: 'Ada Cicilan?',
+    loanNo: 'Tidak',
+    loanYes: 'Ya',
+    currentLoanLabel: 'Nominal Cicilan Saat Ini',
+    currentLoanPlaceholder: 'Contoh: 1500000',
     carLabel: 'Mobil',
     bikeLabel: 'Motor',
+    selectVehicleType: 'Pilih jenis kendaraan',
+    selectCondition: 'Pilih kondisi',
+    clearButton: 'Hapuskan',
+    summaryTitle: 'Ringkasan',
+    summaryVehicleType: 'Jenis kendaraan',
+    summaryVehicleName: 'Nama kendaraan',
+    summaryVehicleBrand: 'Merek kendaraan',
+    summaryCondition: 'Kondisi',
+    summaryConditionNew: 'Baru',
+    summaryConditionUsed: 'Bekas',
+    summaryVehicleYear: 'Tahun kendaraan',
+    summaryTotalIncome: 'Total penghasilan',
+    summaryExistingInstallment: 'Ada cicilan',
+    summaryCurrentInstallmentAmount: 'Nominal cicilan saat ini',
+    summaryYes: 'Ya',
+    summaryNo: 'Tidak',
   },
 };
 
@@ -346,12 +425,12 @@ const formatRupiah = (number) => {
   }).format(Number(number));
 };
 
-const formatPriceInput = () => {
-  const priceInput = document.getElementById('calc-price');
-  if (!priceInput) return;
-  const digits = priceInput.value.replace(/[^0-9]/g, '');
+const formatPriceInput = (inputElement) => {
+  const input = inputElement || document.activeElement;
+  if (!input || !('value' in input)) return;
+  const digits = input.value.toString().replace(/[^0-9]/g, '');
   const formatted = digits.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-  priceInput.value = formatted;
+  input.value = formatted;
 };
 
 const parseNumericValue = (value) => {
@@ -359,13 +438,66 @@ const parseNumericValue = (value) => {
   return Number.isNaN(parsed) ? 0 : parsed;
 };
 
-const createCreditConsultationPrompt = (price, dpPercent, ratePercent, years) => {
-  const formattedPrice = formatRupiah(price);
-  if (currentLang === 'id') {
-    return `Saya ingin konsultasi pembiayaan kendaraan dengan harga ${formattedPrice}, DP ${dpPercent}%, bunga ${ratePercent}% per tahun, dan tenor ${years} tahun. Tolong berikan rekomendasi angsuran, strategi DP, dan saran pembiayaan yang sesuai.`;
+const buildAdvancedCreditDetails = ({ type, name, brand, condition, year, income, loanExists, loanAmount }) => {
+  const fragments = [];
+
+  if (type) {
+    const label = currentLang === 'id' ? (type === 'car' ? 'mobil' : 'motor') : (type === 'car' ? 'car' : 'motorcycle');
+    fragments.push(currentLang === 'id' ? `Jenis kendaraan: ${label}` : `Vehicle type: ${label}`);
   }
 
-  return `I want a vehicle financing consultation for a vehicle priced at ${formattedPrice}, with a down payment of ${dpPercent}%, an annual interest rate of ${ratePercent}%, and a tenor of ${years} years. Please provide installment recommendations, DP strategy, and financing advice.`;
+  if (name) {
+    fragments.push(currentLang === 'id' ? `Nama kendaraan: ${name}` : `Vehicle name: ${name}`);
+  }
+
+  if (brand) {
+    fragments.push(currentLang === 'id' ? `Merek kendaraan: ${brand}` : `Vehicle brand: ${brand}`);
+  }
+
+  if (condition) {
+    const conditionLabel = currentLang === 'id' ? (condition === 'new' ? 'Baru' : 'Bekas') : (condition === 'new' ? 'New' : 'Used');
+    fragments.push(currentLang === 'id' ? `Kondisi: ${conditionLabel}` : `Condition: ${conditionLabel}`);
+  }
+
+  if (condition === 'used' && year) {
+    fragments.push(currentLang === 'id' ? `Tahun kendaraan: ${year}` : `Vehicle year: ${year}`);
+  }
+
+  if (income) {
+    fragments.push(currentLang === 'id' ? `Penghasilan bulanan: ${formatRupiah(income)}` : `Monthly income: ${formatRupiah(income)}`);
+  }
+
+  if (loanExists) {
+    fragments.push(currentLang === 'id' ? `Sedang ada cicilan: Ya` : `Has existing installment: Yes`);
+    if (loanAmount) {
+      fragments.push(currentLang === 'id' ? `Nominal cicilan saat ini: ${formatRupiah(loanAmount)}` : `Current installment amount: ${formatRupiah(loanAmount)}`);
+    }
+  } else {
+    fragments.push(currentLang === 'id' ? `Sedang ada cicilan: Tidak` : `Has existing installment: No`);
+  }
+
+  return fragments.length ? (currentLang === 'id' ? `Detail tambahan: ${fragments.join(', ')}.` : `Additional details: ${fragments.join(', ')}.`) : '';
+};
+
+const createCreditConsultationPrompt = (price, dpPercent, ratePercent, years) => {
+  const formattedPrice = formatRupiah(price);
+  const type = document.getElementById('vehicle-type')?.value || '';
+  const name = document.getElementById('vehicle-name')?.value.trim();
+  const brand = document.getElementById('vehicle-brand')?.value.trim();
+  const condition = document.getElementById('vehicle-condition')?.value || '';
+  const year = document.getElementById('vehicle-year')?.value || '';
+  const income = parseNumericValue(document.getElementById('monthly-income')?.value || '0');
+  const loanExists = document.getElementById('existing-loan')?.value === 'yes';
+  const loanAmount = parseNumericValue(document.getElementById('current-loan-amount')?.value || '0');
+  const advancedDetails = buildAdvancedCreditDetails({ type, name, brand, condition, year, income, loanExists, loanAmount });
+
+  if (currentLang === 'id') {
+    const base = `Saya ingin konsultasi pembiayaan kendaraan dengan harga ${formattedPrice}, DP ${dpPercent}%, bunga ${ratePercent}% per tahun, dan tenor ${years} tahun.`;
+    return `${base} ${advancedDetails} Tolong berikan rekomendasi angsuran, strategi DP, dan saran pembiayaan yang sesuai.`.trim();
+  }
+
+  const base = `I want a vehicle financing consultation for a vehicle priced at ${formattedPrice}, with a down payment of ${dpPercent}%, an annual interest rate of ${ratePercent}%, and a tenor of ${years} years.`;
+  return `${base} ${advancedDetails} Please provide installment recommendations, DP strategy, and financing advice.`.trim();
 };
 
 const performChatRequest = async (message, thinkingMessage) => {
@@ -465,6 +597,71 @@ const handleConsultationClick = () => {
   window.location.href = 'chat.html';
 };
 
+function getAdvancedSummaryItems() {
+  const items = [];
+  const type = document.getElementById('vehicle-type')?.value;
+  const name = document.getElementById('vehicle-name')?.value.trim();
+  const brand = document.getElementById('vehicle-brand')?.value.trim();
+  const condition = document.getElementById('vehicle-condition')?.value;
+  const year = document.getElementById('vehicle-year')?.value;
+  const income = parseNumericValue(document.getElementById('monthly-income')?.value || '0');
+  const loanExists = document.getElementById('existing-loan')?.value === 'yes';
+  const loanAmount = parseNumericValue(document.getElementById('current-loan-amount')?.value || '0');
+
+  const labels = translations[currentLang] || translations.en;
+  if (type) {
+    const label = currentLang === 'id' ? (type === 'car' ? 'Mobil' : 'Motor') : (type === 'car' ? 'Car' : 'Motorcycle');
+    items.push(`${labels.summaryVehicleType}: ${label}`);
+  }
+  if (name) {
+    items.push(`${labels.summaryVehicleName}: ${name}`);
+  }
+  if (brand) {
+    items.push(`${labels.summaryVehicleBrand}: ${brand}`);
+  }
+  if (condition) {
+    const label = condition === 'new' ? labels.summaryConditionNew : labels.summaryConditionUsed;
+    items.push(`${labels.summaryCondition}: ${label}`);
+  }
+  if (condition === 'used' && year) {
+    items.push(`${labels.summaryVehicleYear}: ${year}`);
+  }
+  if (income) {
+    items.push(`${labels.summaryTotalIncome}: ${formatRupiah(income)}`);
+  }
+  if (loanExists) {
+    items.push(`${labels.summaryExistingInstallment}: ${labels.summaryYes}`);
+    if (loanAmount) {
+      items.push(`${labels.summaryCurrentInstallmentAmount}: ${formatRupiah(loanAmount)}`);
+    }
+  }
+
+  return items;
+}
+
+function updateSummaryPanel() {
+  const panel = document.getElementById('result-summary-panel');
+  const content = document.getElementById('result-summary-content');
+  if (!panel || !content) return;
+
+  const items = getAdvancedSummaryItems();
+  content.innerHTML = '';
+
+  if (!items.length) {
+    panel.classList.add('hidden');
+    return;
+  }
+
+  items.forEach((text) => {
+    const entry = document.createElement('div');
+    entry.className = 'summary-item';
+    entry.textContent = text;
+    content.appendChild(entry);
+  });
+
+  panel.classList.remove('hidden');
+}
+
 function hitungKredit() {
   const price = parseNumericValue(document.getElementById('calc-price').value);
   const dpPercent = parseFloat(document.getElementById('calc-dp').value);
@@ -476,6 +673,7 @@ function hitungKredit() {
     document.getElementById('result-dp').innerText = 'Rp 0';
     document.getElementById('result-principal').innerText = 'Rp 0';
     document.getElementById('result-interest').innerText = 'Rp 0';
+    updateSummaryPanel();
     return;
   }
 
@@ -488,6 +686,8 @@ function hitungKredit() {
   document.getElementById('result-dp').innerText = formatRupiah(dpAmount);
   document.getElementById('result-principal').innerText = formatRupiah(principal);
   document.getElementById('result-interest').innerText = formatRupiah(totalInterest);
+
+  updateSummaryPanel();
 }
 
 const autoResize = (textarea) => {
@@ -638,6 +838,66 @@ if (form) {
 
 aiConsultButton?.addEventListener('click', handleConsultationClick);
 
+const populateVehicleYears = () => {
+  if (!vehicleYearSelect) return;
+
+  const currentYear = new Date().getFullYear();
+  const startYear = currentYear;
+  const endYear = 1960;
+
+  vehicleYearSelect.innerHTML = '';
+  for (let year = startYear; year >= endYear; year -= 1) {
+    const option = document.createElement('option');
+    option.value = `${year}`;
+    option.textContent = `${year}`;
+    vehicleYearSelect.appendChild(option);
+  }
+};
+
+const updateVehicleYearVisibility = () => {
+  if (!conditionSelect || !yearRow) return;
+  if (conditionSelect.value === 'used') {
+    yearRow.classList.remove('hidden');
+  } else {
+    yearRow.classList.add('hidden');
+  }
+};
+
+const updateCurrentLoanVisibility = () => {
+  if (!existingLoanSelect || !currentLoanRow || !currentLoanAmount) return;
+  if (existingLoanSelect.value === 'yes') {
+    currentLoanRow.classList.remove('hidden');
+    currentLoanAmount.disabled = false;
+  } else {
+    currentLoanRow.classList.add('hidden');
+    currentLoanAmount.value = '';
+    currentLoanAmount.disabled = true;
+  }
+};
+
+advancedToggle?.addEventListener('click', () => {
+  if (!advancedPanel) return;
+  advancedPanel.classList.toggle('hidden');
+  advancedToggle.textContent = advancedPanel.classList.contains('hidden')
+    ? translations[currentLang]?.advanceDetails || 'Advance Detail'
+    : translations[currentLang]?.hideDetails || 'Hide Detail';
+});
+
+conditionSelect?.addEventListener('change', updateVehicleYearVisibility);
+existingLoanSelect?.addEventListener('change', updateCurrentLoanVisibility);
+advancedClear?.addEventListener('click', () => {
+  document.getElementById('vehicle-type').value = '';
+  document.getElementById('vehicle-name').value = '';
+  document.getElementById('vehicle-brand').value = '';
+  document.getElementById('vehicle-condition').value = '';
+  updateVehicleYearVisibility();
+  document.getElementById('vehicle-year').value = '';
+  document.getElementById('monthly-income').value = '';
+  document.getElementById('existing-loan').value = 'no';
+  updateCurrentLoanVisibility();
+  updateSummaryPanel();
+});
+
 if (input) {
   input.addEventListener('keydown', (event) => {
     if (event.key === 'Enter' && !event.shiftKey) {
@@ -658,6 +918,23 @@ if (input) {
   });
 }
 
+const advancedInputs = [
+  document.getElementById('vehicle-type'),
+  document.getElementById('vehicle-name'),
+  document.getElementById('vehicle-brand'),
+  document.getElementById('vehicle-condition'),
+  document.getElementById('vehicle-year'),
+  document.getElementById('monthly-income'),
+  document.getElementById('existing-loan'),
+  document.getElementById('current-loan-amount'),
+];
+
+advancedInputs.forEach((element) => {
+  if (!element) return;
+  element.addEventListener('change', updateSummaryPanel);
+  element.addEventListener('input', updateSummaryPanel);
+});
+
 chatFontSlider?.addEventListener('input', (event) => {
   updateChatFontSize(event.target.value);
 });
@@ -666,6 +943,9 @@ window.addEventListener('load', () => {
   if (input) {
     autoResize(input);
   }
+  populateVehicleYears();
+  updateVehicleYearVisibility();
+  updateCurrentLoanVisibility();
   hitungKredit();
   updateChatFontSize(chatFontSlider?.value || 11);
 });

@@ -30,8 +30,8 @@
     .icon-purple i { color: #7C3AED; }
     .feature-card.group:hover .icon-wrap { background-color: var(--hover-bg, rgba(255,255,255,0.12)); }
     .feature-card.group:hover .icon-wrap i { color: #ffffff !important; }
-    /* Topbar opacity (70%) - background color used so children keep full opacity */
-    .topbar.glass { background-color: rgba(15, 23, 42, 0.70); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+    /* Topbar with 25% opacity - subtle background for readability */
+    .topbar.glass { background-color: rgba(15, 23, 42, 0.25); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
 
     /* Footer credit text size for mobile and desktop */
     .site-footer .footer-inner p { font-size: 12px; }
@@ -193,6 +193,84 @@
                 </div>
               </div>
             </div>
+            <div class="calculator-advanced">
+              <button type="button" id="advance-detail-toggle" class="button outline" data-i18n="advanceDetails">Advance Detail</button>
+              <div id="advanced-details-panel" class="advanced-panel hidden">
+                <div class="advanced-actions">
+                  <p class="optional-note" data-i18n="optionalNote">Optional: fill in only if available.</p>
+                  <button type="button" id="advance-clear" class="button outline small" data-i18n="clearButton">Clear</button>
+                </div>
+                <div class="grid-2 gap-12">
+                  <div class="form-group">
+                    <label data-i18n="vehicleTypeLabel">Jenis Kendaraan</label>
+                    <div class="input-prefix select-prefix">
+                      <select id="vehicle-type">
+                        <option value="" selected data-i18n="selectVehicleType">Pilih jenis kendaraan</option>
+                        <option value="car" data-i18n="carLabel">Car</option>
+                        <option value="motor" data-i18n="bikeLabel">Motor</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label data-i18n="vehicleNameLabel">Nama Kendaraan</label>
+                    <div class="input-prefix">
+                      <input type="text" id="vehicle-name" placeholder="All New Avanza / NMAX" data-i18n="vehicleNamePlaceholder" />
+                    </div>
+                  </div>
+                </div>
+                <div class="grid-2 gap-12">
+                  <div class="form-group">
+                    <label data-i18n="vehicleBrandLabel">Merek Kendaraan</label>
+                    <div class="input-prefix">
+                      <input type="text" id="vehicle-brand" placeholder="Contoh: Honda" data-i18n="vehicleBrandPlaceholder" />
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label data-i18n="conditionLabel">Kondisi</label>
+                    <div class="input-prefix select-prefix">
+                      <select id="vehicle-condition">
+                        <option value="" selected data-i18n="selectCondition">Pilih kondisi</option>
+                        <option value="new" data-i18n="conditionNew">Baru</option>
+                        <option value="used" data-i18n="conditionUsed">Bekas</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div id="vehicle-year-row" class="grid-2 gap-12 hidden">
+                  <div class="form-group">
+                    <label data-i18n="vehicleYearLabel">Tahun Kendaraan</label>
+                    <div class="input-prefix select-prefix">
+                      <select id="vehicle-year"></select>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label data-i18n="incomeLabel">Total Penghasilan</label>
+                  <div class="input-prefix">
+                    <span>Rp</span>
+                    <input type="text" id="monthly-income" inputmode="numeric" placeholder="Contoh: 10000000" data-i18n="incomePlaceholder" oninput="formatPriceInput(this)" />
+                  </div>
+                </div>
+                <div class="grid-2 gap-12">
+                  <div class="form-group">
+                    <label data-i18n="existingLoanLabel">Ada Cicilan?</label>
+                    <div class="input-prefix select-prefix">
+                      <select id="existing-loan">
+                        <option value="no" data-i18n="loanNo">Tidak</option>
+                        <option value="yes" data-i18n="loanYes">Ya</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div id="current-loan-row" class="form-group hidden">
+                    <label data-i18n="currentLoanLabel">Nominal Cicilan Saat Ini</label>
+                    <div class="input-prefix">
+                      <span>Rp</span>
+                      <input type="text" id="current-loan-amount" inputmode="numeric" placeholder="Contoh: 1500000" data-i18n="currentLoanPlaceholder" oninput="formatPriceInput(this)" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
           <div class="calculator-result glass-card result-panel">
             <div class="result-header">
@@ -207,6 +285,10 @@
               <div><span data-i18n="totalDpLabel">Total DP</span><strong id="result-dp">Rp 0</strong></div>
               <div><span data-i18n="principalLabel">Pokok Hutang</span><strong id="result-principal">Rp 0</strong></div>
               <div><span data-i18n="interestLabel">Estimasi Total Bunga</span><strong id="result-interest">Rp 0</strong></div>
+            </div>
+            <div class="result-summary hidden" id="result-summary-panel">
+              <h5 data-i18n="calcSummaryTitle">Summary</h5>
+              <div class="summary-list" id="result-summary-content"></div>
             </div>
             <button type="button" id="calc-consult-ai" class="button primary calculator-action" data-i18n="calcButton">Konsultasi Detail via AI</button>
           </div>

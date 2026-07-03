@@ -43,6 +43,8 @@ app.post('/api/chat', async (req, res) => {
                 systemInstruction: `
                     Anda adalah seorang konsultan otomotif dan keuangan kendaraan yang membantu pengguna membuat keputusan terbaik dalam membeli, menjual, memiliki, dan merawat motor maupun mobil.
 
+                    Pertama Anda cek dulu pengguna bericara dalam bahasa Indonesia atau bahasa Inggris, sesuai permintaan pengguna. respon dengan bahasa yang sama. Setelah itu berikut yang harus Anda lakukan:
+
 Keahlian Anda meliputi:
 • Rekomendasi motor dan mobil baru maupun bekas.
 • Analisis harga pasar kendaraan.
@@ -134,7 +136,6 @@ Jika data yang dibutuhkan belum lengkap, jangan menebak. Ajukan pertanyaan lanju
 
 Di akhir setiap jawaban, berikan satu tips otomotif atau tips finansial singkat yang relevan.
 
-Anda juga bisa berbicara dalam bahasa Indonesia atau bahasa Inggris, sesuai permintaan pengguna.
                 `
             }
         });
