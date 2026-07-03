@@ -245,7 +245,7 @@
                   </div>
                 </div>
                 <div class="form-group">
-                  <label data-i18n="incomeLabel">Total Penghasilan</label>
+                  <label data-i18n="incomeLabel">Total Monthly Income</label>
                   <div class="input-prefix">
                     <span>Rp</span>
                     <input type="text" id="monthly-income" inputmode="numeric" placeholder="Contoh: 10000000" data-i18n="incomePlaceholder" oninput="formatPriceInput(this)" />
@@ -253,7 +253,7 @@
                 </div>
                 <div class="grid-2 gap-12">
                   <div class="form-group">
-                    <label data-i18n="existingLoanLabel">Ada Cicilan?</label>
+                    <label data-i18n="existingLoanLabel">Any Ongoing Installments?</label>
                     <div class="input-prefix select-prefix">
                       <select id="existing-loan">
                         <option value="no" data-i18n="loanNo">Tidak</option>
@@ -277,6 +277,10 @@
               <h4 data-i18n="calcResultTitle">Estimasi Angsuran</h4>
               <p data-i18n="calcResultSubtitle">Hitung cepat berdasarkan input Anda.</p>
             </div>
+            <div class="result-summary hidden" id="result-summary-panel">
+              <h5 data-i18n="summaryTitle">Summary</h5>
+              <div class="summary-list" id="result-summary-content"></div>
+            </div>
             <div class="result-main">
               <span id="result-monthly">Rp 0</span>
               <span class="result-sub" data-i18n="perMonth">/bln</span>
@@ -285,10 +289,6 @@
               <div><span data-i18n="totalDpLabel">Total DP</span><strong id="result-dp">Rp 0</strong></div>
               <div><span data-i18n="principalLabel">Pokok Hutang</span><strong id="result-principal">Rp 0</strong></div>
               <div><span data-i18n="interestLabel">Estimasi Total Bunga</span><strong id="result-interest">Rp 0</strong></div>
-            </div>
-            <div class="result-summary hidden" id="result-summary-panel">
-              <h5 data-i18n="calcSummaryTitle">Summary</h5>
-              <div class="summary-list" id="result-summary-content"></div>
             </div>
             <button type="button" id="calc-consult-ai" class="button primary calculator-action" data-i18n="calcButton">Konsultasi Detail via AI</button>
           </div>
